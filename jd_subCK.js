@@ -1,6 +1,6 @@
 /*
-	cron：30 23 * * *
-    new Env("提交CK")
+cron：30 23 * * *
+new Env("提交CK")
 */
  const $ = new Env('提交CK');
  const notify = $.isNode() ? require('./sendNotify') : '';
