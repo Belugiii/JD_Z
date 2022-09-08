@@ -2,7 +2,7 @@
 [Script]
  cron：0 0 * * 5
  */
-const $ = new Env("京东互助码JD_A");
+const $ = new Env("Z_京互助码");
 const JD_API_HOST = "https://api.m.jd.com/client.action";
 let cookiesArr = [], cookie = '', message;
 var farm = [];

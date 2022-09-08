@@ -1,7 +1,7 @@
 /*
    cron: 23 0,7 * * *
 */
-const $ = new Env('京东极速免单JD_A');
+const $ = new Env('Z_京东极速免单');
 const notify = $.isNode() ? require('./sendNotify') : '';
 //Node.js用户请在jdCookie.js处填写京东ck;
 const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';

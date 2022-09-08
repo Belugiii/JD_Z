@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*
 '''
-cron: 10 23 * * *
-new Env('京东wskey转Cookie');
+cron: 20 23 * * *
+new Env('Z_京东wskey转Cookie');
 '''
 import socket  # 用于端口检测
 import base64  # 用于编解码
