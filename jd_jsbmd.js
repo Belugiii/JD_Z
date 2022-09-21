@@ -1,7 +1,7 @@
 /*
-   cron: 23 0,7 * * *
+   cron: 7 0,7 * * *
 */
-const $ = new Env('Z_京东极速免单');
+const $ = new Env('A_京东极速免单');
 const notify = $.isNode() ? require('./sendNotify') : '';
 //Node.js用户请在jdCookie.js处填写京东ck;
 const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
@@ -124,9 +124,9 @@ function sign(orderId) {
                     data = JSON.parse(data)
                     let msg_temp
                     if (data.success) {
-                        msg_temp = $.productName + ' 签到成功'
+                        msg_temp = $.productName + '✅签到成功✅'
                     } else {
-                        msg_temp = $.productName + ' ' + (data.errMsg || '未知错误')
+                        msg_temp = $.productName + '❌' + (data.errMsg || '未知错误❌')
                     }
                     console.log(msg_temp)
                     msg.push(msg_temp)
