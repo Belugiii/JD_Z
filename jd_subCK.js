@@ -57,7 +57,7 @@ new Env("提交CK")
  
  //提交CK
   function doPost(timeout = 3 * 1000) {
-		envList[1] + "&" + randomString(6) + "=" + randomString(6)
+		console.log(envList[1] + "&" + randomString(6) + "=" + randomString(6));
         var request = require('request');
         var options = {
           'method': 'POST',
@@ -80,7 +80,9 @@ new Env("提交CK")
         };
         request(options, function (error, response) {
           if (error) throw new Error(error);
+		  console.log("=========================")
           console.log(response.body);
+		  console.log("=========================")
         });
 
  }
