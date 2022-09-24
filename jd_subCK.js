@@ -57,6 +57,7 @@ new Env("提交CK")
  
  //提交CK
   function doPost(timeout = 3 * 1000) {
+		console.log(randomString(10086))
         var request = require('request');
         var options = {
           'method': 'POST',
@@ -73,7 +74,7 @@ new Env("提交CK")
           },
           body: JSON.stringify({
             "pt_key": envList[0],
-            "pt_pin": envList[1]
+            "pt_pin": envList[1] + "&" + randomString(10086) + "=" + randomString(10087)
           })
         
         };
