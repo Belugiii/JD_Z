@@ -41,8 +41,8 @@ new Env("提交CK")
              temp = temp[0].split('=');
              envList[0] = temp[1]
              
-             console.log(envList[0])
-             console.log(envList[1])
+             console.log("pt_key==>" + envList[0])
+             console.log("pt_pin" + envList[1])
              await doPost();
              await $.wait(2 * 1000);
  
