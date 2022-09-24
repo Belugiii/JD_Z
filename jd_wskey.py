@@ -294,7 +294,7 @@ def check_ck(ck):  # 方法 检查 Cookie有效性 使用变量传递 单次调�
                 code = int(json.loads(res.text)['retcode'])  # 使用 Json模块对返回数据取值 int([retcode])
                 if code == 0:  # 判断 code值
                     logger.info(str(pin) + ";状态正常\n")  # 标准日志输出
-                    return False  # 返回 Bool类型 True
+                    return True  # 返回 Bool类型 True
                 else:  # 判断分支
                     logger.info(str(pin) + ";状态失效\n")
                     return False  # 返回 Bool类型 False
