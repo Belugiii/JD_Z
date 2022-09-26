@@ -131,7 +131,7 @@ function sign(orderId) {
                         msg_temp = $.productName + '✅签到成功✅'
                     } else {
 						if(data.errMsg === "已经签到过了"){
-							
+							msg_temp = $.productName + '❌' + (data.errMsg || '未知错误❌');
 						}else{
 							Notify++;
 							msg_temp = $.productName + '❌' + (data.errMsg || '未知错误❌');
