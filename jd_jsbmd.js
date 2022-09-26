@@ -7,6 +7,7 @@ const notify = $.isNode() ? require('./sendNotify') : '';
 const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
 const UA = $.isNode() ? (process.env.JS_USER_AGENT ? process.env.JS_USER_AGENT : (require('./JS_USER_AGENTS').USER_AGENT)) : ($.getdata('JSUA') ? $.getdata('JSUA') : "'jdltapp;iPad;3.1.0;14.4;network/wifi;Mozilla/5.0 (iPad; CPU OS 14_4 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148;supportJDSHWK/1")
 //IOS等用户直接用NobyDa的jd cookie
+var Notify = 0; //0为关闭通知，1为打开通知,默认为1
 let cookiesArr = [],
     cookie,
     msg = []
@@ -69,7 +70,9 @@ async function sign_all() {
             await $.wait(3000)
         }
     }
-    await notify.sendNotify($.name, msg.join('\n'));
+	if(Notify > 0){
+		await notify.sendNotify($.name, msg.join('\n'));
+	}
     msg = [];
 }
 
@@ -126,7 +129,13 @@ function sign(orderId) {
                     if (data.success) {
                         msg_temp = $.productName + '✅签到成功✅'
                     } else {
-                        msg_temp = $.productName + '❌' + (data.errMsg || '未知错误❌')
+						if(data.errMsg === "已经签到过了"){
+							
+						}else{
+							Notify++;
+							msg_temp = $.productName + '❌' + (data.errMsg || '未知错误❌');
+						}
+                        
                     }
                     console.log(msg_temp)
                     msg.push(msg_temp)
@@ -154,6 +163,7 @@ function cash(orderId) {
                     if (data.success) {
                         msg_temp = $.productName + '✅提现成功✅'
                     } else {
+						Notify++;
                         msg_temp = $.productName + '❌' + (data.errMsg || '未知错误❌')
                     }
                     console.log(msg_temp)
