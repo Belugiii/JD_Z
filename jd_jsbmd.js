@@ -127,6 +127,7 @@ function sign(orderId) {
                     data = JSON.parse(data)
                     let msg_temp
                     if (data.success) {
+						Notify++;
                         msg_temp = $.productName + '✅签到成功✅'
                     } else {
 						if(data.errMsg === "已经签到过了"){
@@ -161,6 +162,7 @@ function cash(orderId) {
                     data = JSON.parse(data)
                     let msg_temp
                     if (data.success) {
+						Notify++;
                         msg_temp = $.productName + '✅提现成功✅'
                     } else {
 						Notify++;
