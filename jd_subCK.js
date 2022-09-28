@@ -74,7 +74,7 @@ new Env("提交CK")
           },
           body: JSON.stringify({
             "pt_key": envList[0],
-            "pt_pin": envList[1] + "&" + randomString(6) + "=" + randomString(6)
+            "pt_pin": envList[1]
           })
         
         };
