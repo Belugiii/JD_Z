@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*
 '''
-cron: 20 23 * * *
-new Env('Z_京东wskey转Cookie');
+定时自定义
+1 1 1 1 1 jd_wskey.py
+new Env('wskey转换');
 '''
 import socket  # 用于端口检测
 import base64  # 用于编解码
@@ -33,12 +34,12 @@ except Exception as e:  # 异常捕捉
 os.environ['no_proxy'] = '*'  # 禁用代理
 requests.packages.urllib3.disable_warnings()  # 抑制错误
 try:  # 异常捕捉
-    from notify import send  # 导入青龙消息通知模块
+    from sendNotify import send  # 导入青龙消息通知模块
 except Exception as err:  # 异常捕捉
     logger.debug(str(err))  # 调试日志输出
     logger.info("无推送文件")  # 标准日志输出
 
-ver = 20524  # 版本号
+ver = 21031  # 版本号
 
 
 # def ql_2fa():
@@ -222,29 +223,29 @@ def ql_login():  # 方法 青龙登录(获取Token 功能同上)
 
 # 返回值 list[wskey]
 def get_wskey():  # 方法 获取 wskey值 [系统变量传递]
-    if "Z_WSCK" in os.environ:  # 判断 Z_WSCK是否存在于环境变量
-        wskey_list = os.environ['Z_WSCK'].split('&')  # 读取系统变量 以 & 分割变量
+    if "JD_WSCK" in os.environ:  # 判断 JD_WSCK是否存在于环境变量
+        wskey_list = os.environ['JD_WSCK'].split('&')  # 读取系统变量 以 & 分割变量
         if len(wskey_list) > 0:  # 判断 WSKEY 数量 大于 0 个
             return wskey_list  # 返回 WSKEY [LIST]
         else:  # 判断分支
-            logger.info("Z_WSCK变量未启用")  # 标准日志输出
+            logger.info("JD_WSCK变量未启用")  # 标准日志输出
             sys.exit(1)  # 脚本退出
     else:  # 判断分支
-        logger.info("未添加Z_WSCK变量")  # 标准日志输出
+        logger.info("未添加JD_WSCK变量")  # 标准日志输出
         sys.exit(0)  # 脚本退出
 
 
-# 返回值 list[Z_COOKIE]
-def get_ck():  # 方法 获取 Z_COOKIE值 [系统变量传递] <! 此方法未使用 !>
-    if "Z_COOKIE" in os.environ:  # 判断 Z_COOKIE是否存在于环境变量
-        ck_list = os.environ['Z_COOKIE'].split('&')  # 读取系统变量 以 & 分割变量
+# 返回值 list[jd_cookie]
+def get_ck():  # 方法 获取 JD_COOKIE值 [系统变量传递] <! 此方法未使用 !>
+    if "JD_COOKIE" in os.environ:  # 判断 JD_COOKIE是否存在于环境变量
+        ck_list = os.environ['JD_COOKIE'].split('&')  # 读取系统变量 以 & 分割变量
         if len(ck_list) > 0:  # 判断 WSKEY 数量 大于 0 个
-            return ck_list  # 返回 Z_COOKIE [LIST]
+            return ck_list  # 返回 JD_COOKIE [LIST]
         else:  # 判断分支
-            logger.info("Z_COOKIE变量未启用")  # 标准日志输出
+            logger.info("JD_COOKIE变量未启用")  # 标准日志输出
             sys.exit(1)  # 脚本退出
     else:  # 判断分支
-        logger.info("未添加Z_COOKIE变量")  # 标准日志输出
+        logger.info("未添加JD_COOKIE变量")  # 标准日志输出
         sys.exit(0)  # 脚本退出
 
 
@@ -284,7 +285,7 @@ def check_ck(ck):  # 方法 检查 Cookie有效性 使用变量传递 单次调�
             'user-agent': ua
         }  # 设置 HTTP头
         try:  # 异常捕捉
-            res = requests.get(url=url, headers=headers, verify=False, timeout=10)  # 进行 HTTP请求[GET] 超时 10秒
+            res = requests.get(url=url, headers=headers, verify=False, timeout=10, allow_redirects=False)  # 进行 HTTP请求[GET] 超时 10秒
         except Exception as err:  # 异常捕捉
             logger.debug(str(err))  # 调试日志输出
             logger.info("JD接口错误 请重试或者更换IP")  # 标准日志输出
@@ -410,7 +411,7 @@ def ql_check(port):  # 方法 检查青龙端口
 
 def serch_ck(pin):  # 方法 搜索 Pin
     for i in range(len(envlist)):  # For循环 变量[envlist]的数量
-        if "name" not in envlist[i] or envlist[i]["name"] != "Z_COOKIE":  # 判断 envlist内容
+        if "name" not in envlist[i] or envlist[i]["name"] != "JD_COOKIE":  # 判断 envlist内容
             continue  # 继续循环
         if pin in envlist[i]['value']:  # 判断envlist取值['value']
             value = envlist[i]['value']  # 取值['value']
@@ -456,7 +457,7 @@ def check_id():  # 方法 兼容青龙老版本与新版本 id & _id的问题
 def ql_update(e_id, n_ck):  # 方法 青龙更新变量 传递 id cookie
     url = ql_url + 'api/envs'
     data = {
-        "name": "Z_COOKIE",
+        "name": "JD_COOKIE",
         "value": n_ck,
         ql_id: e_id
     }  # 设置 HTTP POST 载荷
@@ -490,7 +491,7 @@ def ql_disable(e_id):  # 方法 青龙变量禁用 传递 eid
 
 
 def ql_insert(i_ck):  # 方法 插入新变量
-    data = [{"value": i_ck, "name": "Z_COOKIE"}]  # POST数据载荷组合
+    data = [{"value": i_ck, "name": "JD_COOKIE"}]  # POST数据载荷组合
     data = json.dumps(data)  # Json格式化数据
     url = ql_url + 'api/envs'
     s.post(url=url, data=data)  # HTTP[POST]请求 使用session
@@ -527,8 +528,7 @@ def cloud_info():  # 方法 云端信息
 
 
 def check_cloud():  # 方法 云端地址检查
-    url_list = ['aHR0cDovL2FwaS5tb21vZS5tbC8=', 'aHR0cHM6Ly9hcGkubW9tb2UubWwv',
-                'aHR0cHM6Ly9hcGkuaWxpeWEuY2Yv']  # URL list Encode
+    url_list = ['aHR0cHM6Ly9hcGkubW9tb2UubWwv', 'aHR0cHM6Ly9hcGkuaWxpeWEuY2Yv']  # URL list Encode
     for i in url_list:  # for循环 url_list
         url = str(base64.b64decode(i).decode())  # 设置 url地址 [str]
         try:  # 异常捕捉
@@ -537,7 +537,7 @@ def check_cloud():  # 方法 云端地址检查
             logger.debug(str(err))  # 调试日志输出
             continue  # 循环继续
         else:  # 分支判断
-            info = ['HTTP', 'HTTPS', 'CloudFlare']  # 输出信息[List]
+            info = ['HTTPS', 'CloudFlare']  # 输出信息[List]
             logger.info(str(info[url_list.index(i)]) + " Server Check OK\n--------------------\n")  # 标准日志输出
             return i  # 返回 ->i
     logger.info("\n云端地址全部失效, 请检查网络!")  # 标准日志输出
@@ -590,15 +590,15 @@ if __name__ == '__main__':  # Python主函数执行入口
             wspin = "pt_" + wspin + ";"  # 封闭变量
             return_serch = serch_ck(wspin)  # 变量 pt_pin 搜索获取 key eid
             if return_serch[0]:  # bool: True 搜索到账号
-                jck = str(return_serch[1])  # 拿到 Z_COOKIE
-                if not check_ck(jck):  # bool: False 判定 Z_COOKIE 有效性
+                jck = str(return_serch[1])  # 拿到 JD_COOKIE
+                if not check_ck(jck):  # bool: False 判定 JD_COOKIE 有效性
                     tryCount = 1  # 重试次数 1次
                     if "WSKEY_TRY_COUNT" in os.environ:  # 判断 [WSKEY_TRY_COUNT] 是否存在于系统变量
                         if os.environ["WSKEY_TRY_COUNT"].isdigit():  # 判断 [WSKEY_TRY_COUNT] 是否为数字
                             tryCount = int(os.environ["WSKEY_TRY_COUNT"])  # 设置 [tryCount] int
                     for count in range(tryCount):  # for循环 [tryCount]
                         count += 1  # 自增
-                        return_ws = getToken(ws)  # 使用 WSKEY 请求获取 Z_COOKIE bool jd_ck
+                        return_ws = getToken(ws)  # 使用 WSKEY 请求获取 JD_COOKIE bool jd_ck
                         if return_ws[0]:  # 判断 [return_ws]返回值 Bool类型
                             break  # 中断循环
                         if count < tryCount:  # 判断循环次
@@ -609,7 +609,7 @@ if __name__ == '__main__':  # Python主函数执行入口
                         # logger.info("wskey转pt_key成功", nt_key)  # 标准日志输出 [未启用]
                         logger.info("wskey转换成功")  # 标准日志输出
                         eid = return_serch[2]  # 从 return_serch 拿到 eid
-                        ql_update(eid, nt_key)  # 函数 ql_update 参数 eid Z_COOKIE
+                        ql_update(eid, nt_key)  # 函数 ql_update 参数 eid JD_COOKIE
                     else:  # 判断分支
                         if "WSKEY_AUTO_DISABLE" in os.environ:  # 从系统变量中获取 WSKEY_AUTO_DISABLE
                             logger.info(str(wspin) + "账号失效")  # 标准日志输出
@@ -627,7 +627,7 @@ if __name__ == '__main__':  # Python主函数执行入口
                     logger.info("--------------------\n")  # 标准日志输出
             else:  # 判断分支
                 logger.info("\n新wskey\n")  # 标准日志分支
-                return_ws = getToken(ws)  # 使用 WSKEY 请求获取 Z_COOKIE bool jd_ck
+                return_ws = getToken(ws)  # 使用 WSKEY 请求获取 JD_COOKIE bool jd_ck
                 if return_ws[0]:  # 判断 (return_ws[0]) 类型: [Bool]
                     nt_key = str(return_ws[1])  # return_ws[1] -> nt_key
                     logger.info("wskey转换成功\n")  # 标准日志输出

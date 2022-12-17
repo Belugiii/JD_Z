@@ -1,7 +1,7 @@
 /*
    cron: 7 0,7 * * *
 */
-const $ = new Env('Z_京东极速免单');
+const $ = new Env('A_京东极速免单');
 const notify = $.isNode() ? require('./sendNotify') : '';
 //Node.js用户请在jdCookie.js处填写京东ck;
 const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
@@ -39,8 +39,6 @@ const JD_API_HOST = 'https://api.m.jd.com/';
     }
 })()
 .catch((e) => {
-				Notify ++;
-				msg.push(e)
         $.log('', `❌ ${$.name}, 失败! 原因: ${e}!`, '')
         notify.sendNotify($.name + '异常!!', msg.join('\n') + '\n' + e)
     })
@@ -64,6 +62,15 @@ async function sign_all() {
     await $.wait(3000)
     await query()
     await $.wait(3000)
+    for (const order of $.signFreeOrderInfoList) {
+        // console.debug('2nd now:', order)
+        if (order.needSignDays == order.hasSignDays) {
+            console.log(order.productName, '可提现,执行提现')
+            $.productName = order.productName
+            await cash(order.orderId)
+            await $.wait(3000)
+        }
+    }
 	if(Notify > 0){
 		await notify.sendNotify($.name, msg.join('\n'));
 	}
@@ -101,8 +108,6 @@ function query() {
                     }
                 }
             } catch (e) {
-				Notify ++;
-				msg.push(e)
                 $.logErr(e, resp)
             } finally {
                 resolve(data);
@@ -168,8 +173,6 @@ function cash(orderId) {
                     msg.push(msg_temp)
                 }
             } catch (e) {
-				Notify ++;
-				msg.push(e)
                 $.logErr(e, resp)
             } finally {
                 resolve(data);
@@ -218,8 +221,6 @@ function safeGet(data) {
             return true;
         }
     } catch (e) {
-		Notify ++;
-		msg.push(e)
         console.log(e);
         console.log(`京东服务器访问数据为空，请检查自身设备网络情况`);
         return false;
